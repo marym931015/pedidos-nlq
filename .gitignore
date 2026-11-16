@@ -1,0 +1,21 @@
+# Secretos: NUNCA al repositorio
+.env
+
+# Artefactos generados (se reconstruyen con etl.py)
+*.duckdb
+*.duckdb.wal
+data/*.csv
+!data/sample_orders.csv
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
