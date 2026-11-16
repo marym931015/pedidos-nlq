@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field
 
 from src import db, guard, llm
 
-estado: dict[str, Any] = {"con": None, "esquema": {}}
+estado: dict[str, Any] = {"con": None, "esquema": {}, "contexto": {}}
 
 
 @asynccontextmanager
@@ -36,6 +36,7 @@ async def ciclo_de_vida(app: FastAPI):
     con = db.conectar(solo_lectura=True)
     estado["con"] = con
     estado["esquema"] = db.esquema_vistas(con)
+    estado["contexto"] = db.contexto_datos(con)
     try:
         yield
     finally:
@@ -81,14 +82,14 @@ def health() -> dict[str, Any]:
 @app.get("/schema")
 def schema() -> dict[str, Any]:
     """Lo que el LLM ve. Util para depurar una respuesta rara del modelo."""
-    return {"vistas": estado["esquema"]}
+    return {"vistas": estado["esquema"], "datos": estado["contexto"]}
 
 
 @app.post("/ask")
 def ask(peticion: Pregunta):
     # 1. Pregunta -> SQL. Si el proveedor falla, el servicio sigue vivo.
     try:
-        sql_crudo = llm.generar_sql(peticion.question, estado["esquema"])
+        sql_crudo = llm.generar_sql(peticion.question, estado["esquema"], estado["contexto"])
     except llm.LlmNoDisponible as err:
         return _error(503, "llm_unavailable", str(err))
     except llm.PreguntaFueraDeAlcance as err:

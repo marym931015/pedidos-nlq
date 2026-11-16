@@ -47,3 +47,19 @@ def esquema_vistas(con) -> dict[str, list[dict[str, str]]]:
         filas = con.execute(f"DESCRIBE {vista}").fetchall()
         esquema[vista] = [{"columna": f[0], "tipo": f[1]} for f in filas]
     return esquema
+
+
+def contexto_datos(con) -> dict:
+    """Resumen de que contienen las vistas: periodo cubierto y valores de `pais`.
+
+    Va al prompt del LLM. Sin esto el modelo escribe SQL sintacticamente perfecto
+    contra un rango de fechas que no existe ("marzo" -> 2023 en vez de 2024) y
+    devuelve cero filas, que es el peor fallo posible: no da error, da vacio.
+    """
+    desde, hasta = con.execute(
+        "SELECT min(mes), max(mes) FROM v_ventas_mes_pais"
+    ).fetchone()
+    paises = [f[0] for f in con.execute(
+        "SELECT DISTINCT pais FROM v_ventas_mes_pais ORDER BY 1"
+    ).fetchall()]
+    return {"desde": str(desde), "hasta": str(hasta), "paises": paises}
