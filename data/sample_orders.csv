@@ -1,0 +1,21 @@
+order_id,fecha,cliente,pais,producto,importe,estado
+ORD-00001,2024-11-23,Luis Garcia,México,Portatil,374.64,entregado
+ORD-00002,2024-02-22,Elena Lopez,Alemania,Raton,57.31,entregado
+ORD-00003,2024-04-29,Elena Garcia,Alemania,"Monitor 24""",1076.15,enviado
+ORD-00004,2024-08-02,Carlos Nunez,Alemania,Portatil,1215.24,entregado
+ORD-00005,2024-03-22, LUCIA TORRES,FRANCIA,"Monitor 24""",330.59,pendiente
+ORD-00006,2024-02-22,Luis Vidal,España,Portatil,1271.92,enviado
+ORD-00007,2024-01-23,Diego Lopez,Italia,Teclado,831.98,pendiente
+ORD-00008,2024-11-12,Javier Sanchez,México,Teclado,78.22,entregado
+ORD-00009,2024-05-28,Luis Sanchez,España,Raton,423.90,enviado
+ORD-00010,2024-07-05,Marta Torres,Francia,"Monitor 24""",1007.89,enviado
+ORD-00011,2024-12-15,Luis Martinez,Alemania,Auriculares,"374,52",entregado
+ORD-00012,2024-05-18,Elena Sanchez,México,Portatil,1265.00,pendiente
+ORD-00013,2024-04-27,Ana Torres,Italia,Portatil,108.55,cancelado
+ORD-00014,2024-10-17,Javier Sanchez,México,Raton,599.09,cancelado
+ORD-00020,2024-05-16,Javier Lopez,Francia,Raton,245.49,entregado
+ORD-00015,2024-08-22,Marta Romero,Portugal,"Monitor 24""",1119.29,entregado
+ORD-00016,2024-10-26,Lucia Vidal,Francia,"Monitor 24""",1495.02,entregado
+ORD-00017,,Luis Garcia,España,"Monitor 24""",944.26,pendiente
+ORD-00252,2024-07-10,Sofia Garcia,Francia,Dock USB-C,110.59,entregado
+ORD-00018,2024-08-04,Pablo Lopez,Italia,Raton,897.27,entregado
