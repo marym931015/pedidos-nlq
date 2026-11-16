@@ -10,7 +10,9 @@
 -- esta en la tabla (es un hecho que ocurrio) pero sumarlo inflaria los ingresos.
 CREATE OR REPLACE VIEW v_ventas_mes_pais AS
 SELECT
-    date_trunc('month', fecha)          AS mes,
+    -- El cast a DATE es intencionado: date_trunc devuelve TIMESTAMP y eso
+    -- obligaria al LLM a comparar fechas contra '2024-03-01 00:00:00'.
+    date_trunc('month', fecha)::DATE    AS mes,
     pais,
     count(*)                            AS num_pedidos,
     round(sum(importe), 2)              AS importe_total,
