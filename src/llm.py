@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MODELO = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+MODELO = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
 PLANTILLA_PROMPT = """Eres un traductor de preguntas a SQL de DuckDB.
 Devuelves UNICAMENTE una consulta SELECT, sin explicaciones y sin markdown.
@@ -23,10 +23,14 @@ Solo existen estas dos vistas, no hay ninguna tabla mas:
 
 {esquema}
 
+Los datos disponibles:
+{contexto}
+
 Reglas:
 - Solo SELECT. Nada de INSERT, UPDATE, DELETE, DROP, ATTACH ni COPY.
-- Usa solo las vistas de arriba y sus columnas exactas.
-- `mes` es de tipo DATE y apunta al dia 1 de cada mes.
+- Usa solo las vistas de arriba, con su nombre exacto y sus columnas exactas.
+- `mes` es de tipo DATE y apunta al dia 1 de cada mes. Para filtrar un mes concreto
+  usa el año que aparece en el periodo de arriba, no el año actual.
 - Los importes ya excluyen pedidos cancelados y devueltos.
 - Si la pregunta no se puede responder con estas vistas, devuelve exactamente: NO_RESPONDIBLE
 
@@ -66,7 +70,21 @@ def limpiar_respuesta(texto: str) -> str:
     return limpio.strip().rstrip(";").strip()
 
 
-def generar_sql(pregunta: str, esquema: dict[str, list[dict[str, str]]]) -> str:
+def formatear_contexto(contexto: dict | None) -> str:
+    """Periodo cubierto y paises presentes, para que el modelo no invente rangos."""
+    if not contexto:
+        return "- (sin informacion adicional)"
+    return (
+        f"- Periodo cubierto: de {contexto['desde']} a {contexto['hasta']}.\n"
+        f"- Paises presentes: {', '.join(contexto['paises'])}."
+    )
+
+
+def generar_sql(
+    pregunta: str,
+    esquema: dict[str, list[dict[str, str]]],
+    contexto: dict | None = None,
+) -> str:
     """Pregunta -> SQL. Lanza LlmNoDisponible o PreguntaFueraDeAlcance.
 
     Lo que devuelve NO es de fiar todavia: pasa por guard.validar antes de
@@ -86,7 +104,9 @@ def generar_sql(pregunta: str, esquema: dict[str, list[dict[str, str]]]) -> str:
         respuesta = cliente.models.generate_content(
             model=MODELO,
             contents=PLANTILLA_PROMPT.format(
-                esquema=formatear_esquema(esquema), pregunta=pregunta
+                esquema=formatear_esquema(esquema),
+                contexto=formatear_contexto(contexto),
+                pregunta=pregunta,
             ),
         )
         texto = (respuesta.text or "").strip()
