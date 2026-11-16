@@ -1,5 +1,7 @@
 # Pedidos NLQ — consultas en lenguaje natural sobre datos de pedidos
 
+**Repositorio**: https://github.com/marym931015/pedidos-nlq
+
 Pipeline completo sobre un CSV de pedidos sucio: generación de datos con errores
 controlados, limpieza con informe de calidad, carga en DuckDB con dos vistas
 analíticas, y una API FastAPI que traduce preguntas en español a SQL con Gemini,
@@ -26,7 +28,7 @@ Salida real, no inventada: el `LIMIT 500` lo añade el validador, no el modelo.
 Requiere **Python 3.10 o superior**.
 
 ```bash
-git clone <url-del-repo> && cd pedidos-nlq
+git clone https://github.com/marym931015/pedidos-nlq.git && cd pedidos-nlq
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
